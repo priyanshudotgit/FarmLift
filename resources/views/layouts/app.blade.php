@@ -12,8 +12,8 @@
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <a href="{{ route('home') }}" class="text-xl font-bold">FarmLift</a>
             <div class="space-x-4">
-                <a href="#" class="hover:text-green-200">Login</a>
-                <a href="#" class="bg-white text-green-700 px-4 py-2 rounded shadow">Register</a>
+                <a href="{{ route('login') }}" class="hover:text-green-200">Login</a>
+                <a href="{{ route('register') }}" class="bg-white text-green-700 px-4 py-2 rounded shadow">Register</a>
             </div>
         </div>
     </nav>
