@@ -1,31 +1,43 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FarmerController;
-use App\Http\Controllers\TransporterController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FarmerController;
+use App\Http\Controllers\DriverController;
+use App\Http\Controllers\BookingController;
+use Illuminate\Support\Facades\Auth;
 
-// The Landing Page
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Auth Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('/success', [AuthController::class, 'success'])->name('success');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Transporter Routes
-Route::prefix('transporter')->name('transporter.')->group(function () {
-    Route::get('/dashboard', [TransporterController::class, 'index'])->name('dashboard');
-    Route::get('/trip/create', [TransporterController::class, 'create'])->name('trip.create');
-    Route::post('/trip/store', [TransporterController::class, 'store'])->name('trip.store');
+Route::get('/', function () {
+    if (Auth::check()) {
+        return Auth::user()->isFarmer() 
+            ? redirect()->route('farmer.dashboard') 
+            : redirect()->route('driver.dashboard');
+    }
+    return view('welcome');
 });
 
-// Farmer Routes
-Route::prefix('farmer')->name('farmer.')->group(function () {
-    Route::get('/dashboard', [FarmerController::class, 'index'])->name('dashboard');
-    Route::get('/search', [FarmerController::class, 'search'])->name('search');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Farmer Routes
+    Route::middleware([\App\Http\Middleware\IsFarmer::class])->prefix('farmer')->name('farmer.')->group(function () {
+        Route::get('/dashboard', [FarmerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/search', [FarmerController::class, 'search'])->name('search');
+        Route::post('/book', [BookingController::class, 'store'])->name('book');
+    });
+
+    // Driver Routes
+    Route::middleware([\App\Http\Middleware\IsDriver::class])->prefix('driver')->name('driver.')->group(function () {
+        Route::get('/dashboard', [DriverController::class, 'dashboard'])->name('dashboard');
+        Route::get('/trip/create', [DriverController::class, 'createTrip'])->name('trip.create');
+        Route::post('/trip', [DriverController::class, 'storeTrip'])->name('trip.store');
+        Route::post('/booking/{booking}/status', [BookingController::class, 'updateStatus'])->name('booking.status');
+    });
 });
