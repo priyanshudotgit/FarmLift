@@ -17,23 +17,34 @@
                     <span class="text-blue-500">🌍</span> Find Trucks Nearby
                 </h2>
                 
+                <div class="mb-4">
+                    <p class="text-sm text-gray-500 mb-2">Set your location on the map to find nearby trucks.</p>
+                    <div id="farmer-map" class="w-full h-64 rounded-xl border border-gray-300 z-10 relative"></div>
+                </div>
+
                 <form @submit.prevent="searchTrips" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Your Latitude</label>
-                        <input type="text" x-model="searchForm.lat" class="w-full rounded-xl border-gray-300 px-3 py-2 text-sm focus:ring-blue-500" placeholder="e.g. 28.7041">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Your Longitude</label>
-                        <input type="text" x-model="searchForm.lng" class="w-full rounded-xl border-gray-300 px-3 py-2 text-sm focus:ring-blue-500" placeholder="e.g. 77.1025">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Your Location</label>
+                        <div class="flex gap-2">
+                            <div class="flex-1 relative">
+                                <input type="text" id="farmer_loc_name" class="w-full rounded-xl border-gray-300 px-3 py-2 text-sm focus:ring-blue-500" placeholder="Type to search or click map" autocomplete="off" @input.debounce.500ms="searchLocation($event.target.value)" @focus="showResults = true">
+                                <div x-show="showResults && searchResults.length > 0" @click.away="showResults = false" class="absolute z-20 w-full bg-white mt-1 rounded-xl shadow-lg border border-gray-100 max-h-60 overflow-y-auto" x-cloak style="display: none;">
+                                    <template x-for="result in searchResults" :key="result.place_id || Math.random()">
+                                        <div @click="selectLocation(result)" class="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-50 last:border-0 text-gray-700 transition-colors" x-text="result.display_name"></div>
+                                    </template>
+                                </div>
+                            </div>
+                            <button type="button" id="my_location_btn" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl text-sm border border-gray-300 transition-colors flex-shrink-0" title="Use My Location">📍</button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Req Capacity (Tons)</label>
-                        <input type="number" step="0.1" x-model="searchForm.min_capacity" class="w-full rounded-xl border-gray-300 px-3 py-2 text-sm focus:ring-blue-500" placeholder="0">
+                        <input type="number" step="0.1" x-model="searchForm.min_capacity" class="w-full rounded-xl border-gray-300 px-3 py-2 text-sm focus:ring-blue-500" placeholder="e.g. 5">
                     </div>
                     <div>
                         <button type="submit" class="w-full bg-[#4C8CE4] hover:bg-[#406093] text-white py-2 px-4 rounded-xl font-medium transition-colors shadow-sm flex justify-center items-center h-[38px]">
-                            <span x-show="!loading">Search</span>
-                            <svg x-show="loading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span x-show="!loading">Search Trucks</span>
+                            <svg x-show="loading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="display: none;"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </button>
                     </div>
                 </form>
@@ -118,14 +129,14 @@
     <!-- Booking Modal -->
     <div x-show="modalOpen" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="modalOpen = false">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div @click.away="modalOpen = false" class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10">
                 <form action="{{ route('farmer.book') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="trip_id" :value="selectedTrip?._id">
+                    <input type="hidden" name="trip_id" :value="selectedTrip?._id || selectedTrip?.id">
                     
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
@@ -181,9 +192,9 @@
     function farmerDashboard() {
         return {
             searchForm: {
-                lat: '28.6139',
-                lng: '77.2090',
-                min_capacity: 1
+                lat: '',
+                lng: '',
+                min_capacity: ''
             },
             loading: false,
             searched: false,
@@ -191,8 +202,139 @@
             modalOpen: false,
             selectedTrip: null,
             bookingWeight: 0,
+            map: null,
+            farmerMarker: null,
+            truckMarkers: [],
+            searchResults: [],
+            showResults: false,
+            
+            init() {
+                // Initialize map after x-data is ready and DOM is loaded
+                setTimeout(() => {
+                    this.initMap();
+                }, 100);
+            },
+            
+            initMap() {
+                this.map = L.map('farmer-map').setView([20.5937, 78.9629], 5);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(this.map);
+
+                // Add geocoder control
+                const geocoder = L.Control.geocoder({
+                    defaultMarkGeocode: false,
+                    placeholder: "Search your farm/city location..."
+                })
+                .on('markgeocode', (e) => {
+                    const latlng = e.geocode.center;
+                    this.setFarmerLocation(latlng.lat, latlng.lng, e.geocode.name);
+                    this.map.setView(latlng, 10);
+                })
+                .addTo(this.map);
+
+                // Click on map to set location
+                this.map.on('click', (e) => {
+                    const lat = e.latlng.lat;
+                    const lng = e.latlng.lng;
+                    
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const name = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                            this.setFarmerLocation(lat, lng, name);
+                        })
+                        .catch(err => {
+                            this.setFarmerLocation(lat, lng, `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+                        });
+                });
+
+                document.getElementById('my_location_btn').addEventListener('click', () => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(position => {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            this.setFarmerLocation(lat, lng, "My Location");
+                            this.map.setView([lat, lng], 10);
+                        });
+                    } else {
+                        alert("Geolocation is not supported by this browser.");
+                    }
+                });
+
+                // Try getting user's location initially
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        this.setFarmerLocation(lat, lng, "My Location");
+                        this.map.setView([lat, lng], 10);
+                    });
+                }
+            },
+            
+            setFarmerLocation(lat, lng, name) {
+                this.searchForm.lat = lat;
+                this.searchForm.lng = lng;
+                
+                let shortName = name;
+                if (name.includes(',')) {
+                    shortName = name.split(',').slice(0, 3).join(', ');
+                }
+                document.getElementById('farmer_loc_name').value = shortName;
+
+                if (this.farmerMarker) {
+                    this.map.removeLayer(this.farmerMarker);
+                }
+                
+                this.farmerMarker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        className: 'custom-div-icon',
+                        html: "<div style='background-color:#91D06C;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);'></div>",
+                        iconSize: [18, 18],
+                        iconAnchor: [9, 9]
+                    })
+                }).addTo(this.map).bindPopup("<b>Your Location</b><br>" + shortName).openPopup();
+            },
+
+            async searchLocation(query) {
+                if (query.length < 3) {
+                    this.searchResults = [];
+                    return;
+                }
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                    this.searchResults = await res.json();
+                    this.showResults = true;
+                } catch (e) {
+                    console.error("Search failed", e);
+                }
+            },
+            
+            selectLocation(result) {
+                let shortName = result.display_name;
+                if (shortName.includes(',')) {
+                    shortName = shortName.split(',').slice(0, 3).join(', ');
+                }
+                
+                document.getElementById('farmer_loc_name').value = shortName;
+                this.showResults = false;
+                this.searchResults = [];
+                
+                const lat = result.lat;
+                const lng = result.lon; // Note: Nominatim uses lon, not lng
+                
+                this.map.setView([lat, lng], 10);
+                this.setFarmerLocation(lat, lng, shortName);
+            },
             
             async searchTrips() {
+                if (!this.searchForm.lat || !this.searchForm.lng) {
+                    alert("Please select your location on the map first.");
+                    return;
+                }
+                
                 this.loading = true;
                 try {
                     const query = new URLSearchParams(this.searchForm).toString();
@@ -200,10 +342,62 @@
                     const data = await response.json();
                     this.trips = data.trips;
                     this.searched = true;
+                    
+                    this.plotTrucks();
                 } catch (error) {
                     console.error('Search failed', error);
                 } finally {
                     this.loading = false;
+                }
+            },
+            
+            plotTrucks() {
+                // Clear existing truck markers
+                this.truckMarkers.forEach(marker => this.map.removeLayer(marker));
+                this.truckMarkers = [];
+                
+                const bounds = L.latLngBounds();
+                if (this.farmerMarker) bounds.extend(this.farmerMarker.getLatLng());
+                
+                this.trips.forEach(trip => {
+                    if (trip.origin && trip.origin.coordinates) {
+                        const lat = trip.origin.coordinates[1]; // MongoDB [lng, lat]
+                        const lng = trip.origin.coordinates[0];
+                        
+                        const marker = L.marker([lat, lng], {
+                            icon: L.divIcon({
+                                className: 'custom-div-icon',
+                                html: "<div style='background-color:#406093;width:24px;height:24px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;'><span style='font-size:12px;'>🚚</span></div>",
+                                iconSize: [24, 24],
+                                iconAnchor: [12, 12]
+                            })
+                        }).addTo(this.map);
+                        
+                        // We attach a click event inside popup to open the booking modal
+                        const popupContent = `
+                            <div class="p-1">
+                                <b class="text-sm block mb-1">${trip.origin.name} &rarr; ${trip.destination.name}</b>
+                                <span class="text-xs text-gray-600 block mb-2">Available: ${trip.available_capacity} tons</span>
+                                <button onclick="document.querySelector('[x-data]').__x.$data.openBookModalById('${trip._id || trip.id}')" class="bg-[#91D06C] text-white px-3 py-1 rounded-lg text-xs w-full font-medium hover:bg-[#80bc5e] transition-colors shadow-sm">Book Space</button>
+                            </div>
+                        `;
+                        marker.bindPopup(popupContent);
+                        
+                        this.truckMarkers.push(marker);
+                        bounds.extend([lat, lng]);
+                    }
+                });
+                
+                if (this.truckMarkers.length > 0) {
+                    this.map.fitBounds(bounds, {padding: [50, 50], maxZoom: 12});
+                }
+            },
+            
+            openBookModalById(tripId) {
+                const trip = this.trips.find(t => (t._id || t.id) === tripId);
+                if (trip) {
+                    this.openBookModal(trip);
+                    this.map.closePopup();
                 }
             },
             
@@ -215,4 +409,12 @@
         }
     }
 </script>
+
+@endsection
+
+@section('scripts')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 @endsection

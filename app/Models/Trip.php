@@ -27,9 +27,6 @@ class Trip extends Model
     ];
 
     protected $casts = [
-        'origin'             => 'array',
-        'destination'        => 'array',
-        'waypoints'          => 'array',
         'departure_date'     => 'datetime',
         'total_capacity'     => 'float',
         'available_capacity' => 'float',
