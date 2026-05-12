@@ -6,6 +6,119 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --font-family-caps-xs: 'Inter';
+    --font-family-display: 'Inter';
+    --font-family-body-md: 'Inter';
+    --font-family-body-lg: 'Inter';
+    --font-family-label-sm: 'Inter';
+    --font-family-h1: 'Inter';
+    --font-family-h2: 'Inter';
+    --color-error-container: #ffdad6;
+    --color-on-primary-fixed-variant: #254778;
+    --color-tertiary: #205200;
+    --color-surface-bright: #faf9fe;
+    --color-primary-fixed: #d6e3ff;
+    --color-surface-container-lowest: #ffffff;
+    --color-on-tertiary-fixed: #082100;
+    --color-surface-container: #eeedf2;
+    --color-on-tertiary-fixed-variant: #1f5100;
+    --color-surface-variant: #e3e2e7;
+    --color-on-secondary-container: #003971;
+    --color-inverse-on-surface: #f1f0f5;
+    --color-on-surface: #1a1c1f;
+    --color-tertiary-fixed-dim: #98d772;
+    --color-primary-fixed-dim: #a9c7ff;
+    --color-secondary: #015eb3;
+    --color-on-error-container: #93000a;
+    --color-on-tertiary: #ffffff;
+    --color-on-secondary: #ffffff;
+    --color-tertiary-fixed: #b3f48b;
+    --color-primary-container: #406093;
+    --color-on-error: #ffffff;
+    --color-surface-tint: #3f5f92;
+    --color-surface-container-high: #e8e7ec;
+    --color-primary: #26487a;
+    --color-on-primary: #ffffff;
+    --color-error: #ba1a1a;
+    --color-secondary-container: #67a4fe;
+    --color-on-tertiary-container: #abec84;
+    --color-secondary-fixed-dim: #a8c8ff;
+    --color-surface-container-highest: #e3e2e7;
+    --color-on-surface-variant: #43474f;
+    --color-on-secondary-fixed-variant: #004689;
+    --color-on-secondary-fixed: #001b3c;
+    --color-surface-container-low: #f4f3f8;
+    --color-surface: #faf9fe;
+    --color-outline-variant: #c3c6d0;
+    --color-outline: #747780;
+    --color-on-primary-container: #c9dbff;
+    --color-on-primary-fixed: #001b3d;
+    --color-background: #faf9fe;
+    --color-tertiary-container: #346c13;
+    --color-on-background: #1a1c1f;
+    --color-surface-dim: #dad9de;
+    --color-inverse-primary: #a9c7ff;
+    --color-secondary-fixed: #d5e3ff;
+    --color-inverse-surface: #2f3034;
+    --color-driver-state: #4C8CE4;
+    --color-farmer-state: #91D06C;
+
+    --font-family-caps-xs: 'Inter';
+    --font-family-display: 'Inter';
+    --font-family-body-md: 'Inter';
+    --font-family-body-lg: 'Inter';
+    --font-family-label-sm: 'Inter';
+    --font-family-h1: 'Inter';
+    --font-family-h2: 'Inter';
+
+    --font-size-caps-xs: 12px;
+    --font-size-caps-xs--line-height: 1;
+    --font-size-caps-xs--letter-spacing: 0.05em;
+    --font-size-caps-xs--font-weight: 700;
+
+    --font-size-display: 48px;
+    --font-size-display--line-height: 1.1;
+    --font-size-display--letter-spacing: -0.02em;
+    --font-size-display--font-weight: 700;
+
+    --font-size-body-md: 16px;
+    --font-size-body-md--line-height: 1.6;
+    --font-size-body-md--font-weight: 400;
+
+    --font-size-body-lg: 18px;
+    --font-size-body-lg--line-height: 1.6;
+    --font-size-body-lg--font-weight: 400;
+
+    --font-size-label-sm: 14px;
+    --font-size-label-sm--line-height: 1.4;
+    --font-size-label-sm--letter-spacing: 0.01em;
+    --font-size-label-sm--font-weight: 500;
+
+    --font-size-h1: 32px;
+    --font-size-h1--line-height: 1.2;
+    --font-size-h1--letter-spacing: -0.01em;
+    --font-size-h1--font-weight: 600;
+
+    --font-size-h2: 24px;
+    --font-size-h2--line-height: 1.3;
+    --font-size-h2--font-weight: 600;
+
+    --border-radius-DEFAULT: 0.25rem;
+    --border-radius-lg: 0.5rem;
+    --border-radius-xl: 0.75rem;
+    --border-radius-2xl: 1.25rem;
+    --border-radius-3xl: 1.5rem;
+    --border-radius-full: 9999px;
+
+    --spacing-xl: 4rem;
+    --spacing-gutter: 1.5rem;
+    --spacing-md: 1.5rem;
+    --spacing-margin: 2rem;
+    --spacing-base: 4px;
+    --spacing-sm: 1rem;
+    --spacing-xs: 0.5rem;
+    --spacing-lg: 2.5rem;
 }
