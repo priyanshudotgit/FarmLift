@@ -288,7 +288,7 @@
                             </span>
                         </div>
                     </div>
-                    <button onclick="openBookingModal('${trip._id}', '${originName} → ${destName}', ${trip.price_per_ton}, ${trip.available_capacity})"
+                    <button onclick="openBookingModal('${trip.id}', '${originName} → ${destName}', ${trip.price_per_ton}, ${trip.available_capacity})"
                         class="mt-1 w-full bg-primary/10 hover:bg-primary text-primary hover:text-white px-3 py-2 rounded-lg font-label-sm transition-all duration-200 flex items-center justify-center gap-1 text-xs">
                         <span class="material-symbols-outlined text-[16px]">book_online</span>
                         Book Now

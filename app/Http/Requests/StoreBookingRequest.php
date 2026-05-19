@@ -14,7 +14,7 @@ class StoreBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'trip_id' => 'required|string|exists:trips,_id',
+            'trip_id' => 'required|string',
             'weight' => 'required|numeric|min:0.1',
             'produce_type' => 'required|string|max:100',
             'pickup_address' => 'required|string|max:255',

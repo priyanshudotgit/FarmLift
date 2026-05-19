@@ -20,7 +20,7 @@ class FarmerController extends Controller
     {
         $user = Auth::user();
         
-        $bookings = Booking::where('farmer_id', $user->_id)
+        $bookings = Booking::where('farmer_id', (string) $user->_id)
             ->with('trip.driver')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -32,7 +32,7 @@ class FarmerController extends Controller
         $totalSpent = $bookings->whereNotIn('status', [Booking::STATUS_CANCELLED])->sum('price');
 
         // Next upcoming pickup (confirmed booking with earliest departure)
-        $nextPickup = Booking::where('farmer_id', $user->_id)
+        $nextPickup = Booking::where('farmer_id', (string) $user->_id)
             ->where('status', Booking::STATUS_CONFIRMED)
             ->with('trip')
             ->get()
@@ -106,7 +106,7 @@ class FarmerController extends Controller
     {
         $user = Auth::user();
 
-        $bookings = Booking::where('farmer_id', $user->_id)
+        $bookings = Booking::where('farmer_id', (string) $user->_id)
             ->with('trip.driver')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -122,7 +122,7 @@ class FarmerController extends Controller
         $user = Auth::user();
         $profile = $user->farmerProfile;
 
-        $allBookings = Booking::where('farmer_id', $user->_id)->get();
+        $allBookings = Booking::where('farmer_id', (string) $user->_id)->get();
 
         $stats = [
             'total_bookings' => $allBookings->count(),

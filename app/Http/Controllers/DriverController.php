@@ -20,7 +20,7 @@ class DriverController extends Controller
     {
         $user = Auth::user();
         
-        $trips = Trip::where('driver_id', $user->_id)
+        $trips = Trip::where('driver_id', (string) $user->_id)
             ->with(['bookings.farmer'])
             ->orderBy('departure_date', 'desc')
             ->get();
@@ -78,7 +78,7 @@ class DriverController extends Controller
     {
         $user = Auth::user();
 
-        $trips = Trip::where('driver_id', $user->_id)
+        $trips = Trip::where('driver_id', (string) $user->_id)
             ->with(['bookings.farmer'])
             ->orderBy('departure_date', 'desc')
             ->get();
@@ -93,7 +93,7 @@ class DriverController extends Controller
     {
         $user = Auth::user();
 
-        $trips = Trip::where('driver_id', $user->_id)
+        $trips = Trip::where('driver_id', (string) $user->_id)
             ->with(['bookings.farmer'])
             ->orderBy('departure_date', 'desc')
             ->get();
@@ -147,7 +147,7 @@ class DriverController extends Controller
         $user = Auth::user();
         $profile = $user->driverProfile;
 
-        $trips = Trip::where('driver_id', $user->_id)->with('bookings')->get();
+        $trips = Trip::where('driver_id', (string) $user->_id)->with('bookings')->get();
         $allBookings = $trips->flatMap(fn($t) => $t->bookings);
         $nonCancelled = $allBookings->whereNotIn('status', [Booking::STATUS_CANCELLED]);
 
@@ -264,7 +264,7 @@ class DriverController extends Controller
         $waypoints = [$origin, $destination];
 
         $trip = Trip::create([
-            'driver_id' => Auth::id(),
+            'driver_id' => (string) Auth::id(),
             'origin' => $origin,
             'destination' => $destination,
             'waypoints' => $waypoints, // GeoJSON array for $centerSphere search

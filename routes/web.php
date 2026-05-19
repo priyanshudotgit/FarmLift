@@ -52,3 +52,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/booking/{booking}/status', [BookingController::class, 'updateStatus'])->name('booking.status');
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -22,15 +22,15 @@ class BookingController extends Controller
         $weight = (float) $data['weight'];
 
         // Atomic capacity reservation
-        if (!$tripService->reserveCapacity($trip->_id, $weight)) {
+        if (!$tripService->reserveCapacity((string) $trip->_id, $weight)) {
             return back()->with('error', 'Not enough capacity available on this trip.');
         }
 
         $price = $trip->price_per_ton * $weight;
 
         $booking = Booking::create([
-            'trip_id' => $trip->_id,
-            'farmer_id' => Auth::id(),
+            'trip_id' => (string) $trip->_id,
+            'farmer_id' => (string) Auth::id(),
             'weight' => $weight,
             'price' => $price,
             'status' => Booking::STATUS_PENDING,
@@ -39,8 +39,13 @@ class BookingController extends Controller
             'notes' => $data['notes'] ?? null,
         ]);
 
-        // Fire Event
-        event(new BookingRequested($booking));
+        // Fire Event — wrapped in try-catch so notification failures
+        // never prevent a successful booking from being saved
+        try {
+            event(new BookingRequested($booking));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('BookingRequested event failed: ' . $e->getMessage());
+        }
 
         return redirect()->route('farmer.dashboard')->with('success', 'Booking requested successfully.');
     }
