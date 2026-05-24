@@ -147,7 +147,7 @@
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">calendar_month</span>
 <input class="w-full pl-10 pr-4 py-3 rounded-lg border border-surface-dim bg-white/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors font-body-md text-on-surface-variant" type="date"/>
 </div>
-<button class="bg-primary-container text-on-primary px-6 py-3 rounded-lg font-label-sm text-label-sm w-full hover:bg-primary transition-colors mt-2">Search Trucks</button>
+<a href="{{ route('register') }}"><button class="bg-primary-container text-on-primary px-6 py-3 rounded-lg font-label-sm text-label-sm w-full hover:bg-primary transition-colors mt-2">Search Trucks</button></a>
 </div>
 </div>
 <!-- 3D Dashboard Snippet (Abstract) -->
